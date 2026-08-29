@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MOEP Exchange</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo-favicon.png') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="page">
+    <header class="card header-card">
+      <div class="header-left">
+        <div class="logo-mark" aria-hidden="true">
+          <img src="{{ url_for('static', filename='logo-favicon.png') }}" width="40" height="40" alt="" />
+        </div>
+        <div>
+          <div class="brand-title">MOEP EXCHANGE</div>
+          <div class="brand-sub">Mini Order Exchange Protocol</div>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="ticker-row">
+          <span class="symbol">AAPL</span>
+          <span class="last-price" id="last-price">—.—</span>
+          <span class="change-badge" id="change-badge">+0.00  +0.00%  ▲</span>
+        </div>
+        <div class="ticker-meta">
+          <span>spread <span id="header-spread">—</span></span>
+          <span class="meta-sep">|</span>
+          <span>seq #<span id="header-seq">—</span></span>
+          <span class="meta-sep">|</span>
+          <span>time <span id="header-time">—</span></span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="channels-box">
+          <div class="channels-label">DUAL CHANNELS</div>
+          <div class="channels-row">
+            <div class="channel-col">
+              <div class="channel-line1">
+                <span class="dot purple"></span>
+                <span class="channel-name">TCP</span>
+                <svg class="sparkline" viewBox="0 0 72 16" width="72" height="16" preserveAspectRatio="none" aria-hidden="true">
+                  <polyline points="0,10 8,8 16,11 24,6 32,9 40,4 48,8 56,5 64,9 72,3" fill="none" stroke="#7C5CFC" stroke-width="1.4" />
+                </svg>
+              </div>
+              <div class="channel-desc">Reliable Orders</div>
+            </div>
+            <div class="channels-divider"></div>
+            <div class="channel-col">
+              <div class="channel-line1">
+                <span class="dot purple"></span>
+                <span class="channel-name">UDP</span>
+                <svg class="sparkline" viewBox="0 0 72 16" width="72" height="16" preserveAspectRatio="none" aria-hidden="true">
+                  <polyline points="0,8 8,5 16,12 24,7 32,10 40,3 48,9 56,6 64,11 72,4" fill="none" stroke="#8B7CFF" stroke-width="1.4" />
+                </svg>
+              </div>
+              <div class="channel-desc">Market Data</div>
+            </div>
+          </div>
+        </div>
+        <div class="conn-box" id="conn-box">
+          <div class="conn-row">
+            <span class="dot" id="conn-dot"></span>
+            <span id="conn-label">DISCONNECTED</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="mid-grid">
+      <section class="card book-card">
+        <div class="card-title">ORDER BOOK (Top 5 Levels)</div>
+        <div class="book-head">
+          <span>QTY</span>
+          <span class="bid-head">BID PRICE</span>
+          <span></span>
+          <span class="ask-head">ASK PRICE</span>
+          <span>QTY</span>
+        </div>
+        <div id="order-book-body"></div>
+        <div class="book-legend">
+          <span><i class="swatch bid"></i> Bids</span>
+          <span><i class="swatch ask"></i> Asks</span>
+          <span class="legend-note">Depth bars indicate relative quantity at price level.</span>
+        </div>
+      </section>
+
+      <div class="right-col">
+        <section class="card order-card">
+          <div class="card-title-row">
+            <div class="card-title">NEW ORDER</div>
+            <button type="button" class="clear-btn" id="clear-form">CLEAR ↻</button>
+          </div>
+          <div class="side-toggle" id="side-toggle">
+            <button type="button" class="side-btn active" data-side="BUY">BUY</button>
+            <button type="button" class="side-btn" data-side="SELL">SELL</button>
+          </div>
+          <div class="fields-row">
+            <label class="field">
+              <span>PRICE</span>
+              <span class="stepper">
+                <input id="price-input" type="text" value="214.41" inputmode="decimal" autocomplete="off" />
+                <span class="stepper-btns">
+                  <button type="button" id="price-up" aria-label="Increase price">▴</button>
+                  <button type="button" id="price-down" aria-label="Decrease price">▾</button>
+                </span>
+              </span>
+            </label>
+            <label class="field">
+              <span>QUANTITY</span>
+              <span class="stepper">
+                <input id="qty-input" type="text" value="100" inputmode="numeric" autocomplete="off" />
+                <span class="stepper-btns">
+                  <button type="button" id="qty-up" aria-label="Increase quantity">▴</button>
+                  <button type="button" id="qty-down" aria-label="Decrease quantity">▾</button>
+                </span>
+              </span>
+            </label>
+          </div>
+          <button type="button" class="submit-btn" id="submit-order">SUBMIT ORDER</button>
+          <p class="hint hidden" id="order-hint">Please enter both price and quantity.</p>
+        </section>
+
+        <section class="card trades-card">
+          <div class="card-title">RECENT TRADES</div>
+          <div class="trades-head">
+            <span>TIME</span>
+            <span>PRICE</span>
+            <span>QTY</span>
+            <span>SIDE</span>
+          </div>
+          <div id="trades-body"></div>
+        </section>
+      </div>
+    </div>
+
+    <section class="card log-card">
+      <div class="card-title-row">
+        <div class="card-title">PROTOCOL MESSAGE LOG (Newest First)</div>
+        <div class="gap-banner hidden" id="gap-banner">
+          <span class="dot amber"></span>
+          GAP DETECTED <span class="gap-arrow">→</span> RESEND REQUESTED
+        </div>
+      </div>
+      <div class="log-list" id="log-list"></div>
+    </section>
+  </div>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
