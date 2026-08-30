@@ -20,7 +20,7 @@
 
 ## Files
 
-- [รายงาน](./MOEP-doc-6710451054.pdf)
+- [Document Report](./MOEP-doc-6710451054.pdf)
 - [Presentation Slides](./MOEP-slide-6710451054.pdf)
 - Source Code อยู่ภายใน Repository นี้
 
